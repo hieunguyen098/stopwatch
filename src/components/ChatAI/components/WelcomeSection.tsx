@@ -10,6 +10,7 @@ export const WelcomeSection: React.FC<WelcomeSectionProps> = ({
   welcomeText,
   welcomeDescription,
 }) => {
+  console.log("123");
   return (
     <motion.div
       className="text-center mb-6"
