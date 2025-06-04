@@ -1,9 +1,5 @@
-import StopWatch from "@/components/StopWatch";
+import ChatAI from "@/components/ChatAI/ChatAI";
 
 export default function StopWatchPage() {
-  return (
-    <div>
-      <StopWatch />
-    </div>
-  );
+  return <ChatAI />;
 }
