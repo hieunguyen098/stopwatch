@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
 import { ChatSidebar } from "./components/ChatSidebar";
@@ -15,8 +15,6 @@ export default function ChatAI() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [selectedModel, setSelectedModel] = useState("gpt-4o");
   const [isModelSelectorOpen, setIsModelSelectorOpen] = useState(false);
-  const [windowSize, setWindowSize] = useState({ width: 800, height: 600 });
-
   const { chatHistory, refreshChatHistory, isLoading } = useChatHistory();
   const {
     messages,
@@ -74,17 +72,6 @@ export default function ChatAI() {
       setIsModelSelectorOpen(false);
     }
   };
-
-  useEffect(() => {
-    const updateWindowSize = () => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-    };
-
-    updateWindowSize();
-    window.addEventListener("resize", updateWindowSize);
-
-    return () => window.removeEventListener("resize", updateWindowSize);
-  }, []);
 
   return (
     <motion.div
