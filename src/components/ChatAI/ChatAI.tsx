@@ -93,46 +93,16 @@ export default function ChatAI() {
       className="min-h-screen w-full bg-gradient-to-b from-pink-500 to-pink-100 relative overflow-hidden"
       onClick={handleBackgroundClick}
     >
-      {/* Floating Care Messages Overlay - Full Viewport */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-[9999]">
-        {[
-          "Nhớ ngủ sớm 💤",
-          "Nhớ giữ họng 🍵",
-          "Nhớ giữ sức khỏe 💪",
-          "Nhớ uống nước 💧",
-          "Nhớ ăn đầy đủ 🍚",
-          "Nhớ nghỉ ngơi 😴",
-        ].map((message, i) => (
-          <motion.div
-            key={`floating-message-${i}`}
-            initial={{
-              x: -300,
-              y: Math.random() * (windowSize.height - 200) + 100,
-              opacity: 0,
-            }}
-            animate={{
-              x: windowSize.width + 300,
-              y:
-                Math.random() * (windowSize.height - 200) +
-                100 +
-                Math.sin(i * 0.5) * 50,
-              opacity: [0, 0.8, 0.8, 0],
-            }}
-            transition={{
-              duration: 30 + Math.random() * 20,
-              repeat: Infinity,
-              delay: i * 12 + Math.random() * 8,
-              ease: "linear",
-            }}
-            className="absolute text-pink-700 font-semibold text-xl bg-white/90 backdrop-blur-md px-6 py-3 rounded-full shadow-xl border-2 border-pink-300"
-            style={{
-              fontFamily: "var(--font-inter)",
-              textShadow: "0 2px 4px rgba(0,0,0,0.1)",
-            }}
-          >
-            {message}
-          </motion.div>
-        ))}
+      {/* Minimal Care Message - Performance Optimized */}
+      <div className="fixed top-4 right-4 pointer-events-none z-[9999]">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 0.7, scale: 1 }}
+          transition={{ duration: 1, delay: 2 }}
+          className="text-pink-700 font-medium text-sm bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-pink-200"
+        >
+          Take care of yourself! 💖
+        </motion.div>
       </div>
 
       {/* Backdrop overlay when sidebar is open */}

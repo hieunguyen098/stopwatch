@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
 import { Message } from "../types";
@@ -21,7 +21,6 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
   onEditMessage,
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [windowSize, setWindowSize] = useState({ width: 800, height: 600 });
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,17 +29,6 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  useEffect(() => {
-    const updateWindowSize = () => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-    };
-
-    updateWindowSize();
-    window.addEventListener("resize", updateWindowSize);
-
-    return () => window.removeEventListener("resize", updateWindowSize);
-  }, []);
 
   return (
     <div className="flex-1 overflow-y-auto p-6 space-y-4 relative">
@@ -59,147 +47,24 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
         }}
       ></div>
 
-      {/* Cute Floating Elements */}
+      {/* Subtle Static Decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Floating Hearts */}
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={`heart-${i}`}
-            initial={{
-              x: -50,
-              y: Math.random() * 400 + 100,
-              rotate: 0,
-              scale: 0.5 + Math.random() * 0.5,
-            }}
-            animate={{
-              x: windowSize.width + 50,
-              y: Math.random() * 400 + 100 + Math.sin(i) * 50,
-              rotate: 360,
-              scale: 0.5 + Math.random() * 0.5,
-            }}
-            transition={{
-              duration: 15 + Math.random() * 10,
-              repeat: Infinity,
-              delay: i * 3,
-              ease: "linear",
-            }}
-            className="absolute text-pink-300 text-2xl opacity-60"
-          >
-            💕
-          </motion.div>
-        ))}
-
-        {/* Floating Stars */}
-        {[...Array(4)].map((_, i) => (
-          <motion.div
-            key={`star-${i}`}
-            initial={{
-              x: windowSize.width + 50,
-              y: Math.random() * 300 + 50,
-              rotate: 0,
-              scale: 0.6 + Math.random() * 0.4,
-            }}
-            animate={{
-              x: -50,
-              y: Math.random() * 300 + 50 + Math.cos(i) * 40,
-              rotate: -360,
-              scale: 0.6 + Math.random() * 0.4,
-            }}
-            transition={{
-              duration: 12 + Math.random() * 8,
-              repeat: Infinity,
-              delay: i * 4,
-              ease: "linear",
-            }}
-            className="absolute text-yellow-300 text-xl opacity-50"
-          >
-            ⭐
-          </motion.div>
-        ))}
-
-        {/* Floating Bows */}
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={`bow-${i}`}
-            initial={{
-              x: -30,
-              y: Math.random() * 350 + 80,
-              rotate: 0,
-              scale: 0.7 + Math.random() * 0.3,
-            }}
-            animate={{
-              x: windowSize.width + 30,
-              y: Math.random() * 350 + 80 + Math.sin(i * 2) * 30,
-              rotate: 180,
-              scale: 0.7 + Math.random() * 0.3,
-            }}
-            transition={{
-              duration: 20 + Math.random() * 10,
-              repeat: Infinity,
-              delay: i * 6,
-              ease: "linear",
-            }}
-            className="absolute text-pink-400 text-lg opacity-40"
-          >
-            🎀
-          </motion.div>
-        ))}
-
-        {/* Floating Sparkles */}
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={`sparkle-${i}`}
-            initial={{
-              x: Math.random() * windowSize.width,
-              y: -20,
-              rotate: 0,
-              scale: 0.3 + Math.random() * 0.7,
-            }}
-            animate={{
-              x: Math.random() * windowSize.width,
-              y: windowSize.height + 20,
-              rotate: 360,
-              scale: 0.3 + Math.random() * 0.7,
-            }}
-            transition={{
-              duration: 8 + Math.random() * 6,
-              repeat: Infinity,
-              delay: i * 2,
-              ease: "linear",
-            }}
-            className="absolute text-purple-300 text-sm opacity-50"
-          >
-            ✨
-          </motion.div>
-        ))}
-
-        {/* Floating Cat Faces */}
-        {[...Array(2)].map((_, i) => (
-          <motion.div
-            key={`cat-${i}`}
-            initial={{
-              x: windowSize.width + 40,
-              y: Math.random() * 200 + 150,
-              rotate: 0,
-              scale: 0.8,
-            }}
-            animate={{
-              x: -40,
-              y: Math.random() * 200 + 150 + Math.sin(i * 3) * 20,
-              rotate: -360,
-              scale: 0.8,
-            }}
-            transition={{
-              duration: 25 + Math.random() * 15,
-              repeat: Infinity,
-              delay: i * 10,
-              ease: "linear",
-            }}
-            className="absolute text-pink-300 text-xl opacity-30"
-          >
-            🐱
-          </motion.div>
-        ))}
+        {/* Static decorative elements - much lighter on performance */}
+        <div className="absolute top-20 left-20 text-pink-300 text-xl opacity-20">
+          💕
+        </div>
+        <div className="absolute top-40 right-32 text-yellow-300 text-lg opacity-20">
+          ⭐
+        </div>
+        <div className="absolute bottom-32 left-16 text-pink-400 text-lg opacity-20">
+          🎀
+        </div>
+        <div className="absolute top-60 left-1/2 text-purple-300 text-sm opacity-20">
+          ✨
+        </div>
+        <div className="absolute bottom-20 right-20 text-pink-300 text-lg opacity-20">
+          🐱
+        </div>
       </div>
 
       {/* Messages Container */}
