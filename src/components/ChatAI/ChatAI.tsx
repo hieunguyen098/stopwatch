@@ -44,6 +44,30 @@ export default function ChatAI() {
     loadChat(chat.messages, chat.id);
   };
 
+  // Handle message regeneration
+  const handleRegenerateMessage = (messageIndex: number) => {
+    // Get the last user message before this AI message
+    const userMessages = messages
+      .slice(0, messageIndex)
+      .filter((m) => m.role === "user");
+    const lastUserMessage = userMessages[userMessages.length - 1];
+
+    if (lastUserMessage) {
+      // Re-send the last user message to regenerate the AI response
+      setInput(lastUserMessage.content);
+      sendMessage();
+    }
+  };
+
+  // Handle message editing
+  const handleEditMessage = (messageIndex: number, newContent: string) => {
+    // This would need to be implemented in your chat hook
+    // For now, just log the action
+    console.log(`Edit message ${messageIndex} to: ${newContent}`);
+    // You could implement this by updating the messages array
+    // and potentially re-sending from that point
+  };
+
   // Close model selector when clicking outside
   const handleBackgroundClick = () => {
     if (isModelSelectorOpen) {
@@ -223,6 +247,8 @@ export default function ChatAI() {
               messages={messages}
               isLoading={isSending}
               error={error}
+              onRegenerateMessage={handleRegenerateMessage}
+              onEditMessage={handleEditMessage}
             />
 
             <ChatInput

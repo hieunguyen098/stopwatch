@@ -3,17 +3,22 @@ import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
 import { Message } from "../types";
 import { FormattedMessage } from "./FormattedMessage";
+import { MessageActions } from "./MessageActions";
 
 interface ChatMessagesProps {
   messages: Message[];
   isLoading: boolean;
   error: string | null;
+  onRegenerateMessage?: (messageIndex: number) => void;
+  onEditMessage?: (messageIndex: number, newContent: string) => void;
 }
 
 export const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   isLoading,
   error,
+  onRegenerateMessage,
+  onEditMessage,
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [windowSize, setWindowSize] = useState({ width: 800, height: 600 });
@@ -219,18 +224,42 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
                     : "bg-white/90 text-pink-800 border border-pink-200 shadow-purple-100"
                 }`}
               >
-                <div className="relative">
-                  <FormattedMessage
-                    content={message.content}
-                    isAI={message.role === "assistant"}
-                  />
-                  {/* Message decorative element */}
-                  <div
-                    className={`absolute -bottom-1 -right-1 w-2 h-2 rounded-full ${
-                      message.role === "user" ? "bg-pink-300" : "bg-pink-400"
-                    } opacity-60`}
-                  ></div>
-                </div>
+                <MessageActions
+                  messageContent={message.content}
+                  isAI={message.role === "assistant"}
+                  messageIndex={index}
+                  onRegenerate={
+                    message.role === "assistant" && onRegenerateMessage
+                      ? () => onRegenerateMessage(index)
+                      : undefined
+                  }
+                  onEdit={
+                    message.role === "user" && onEditMessage
+                      ? () => {
+                          const newContent = prompt(
+                            "Edit your message:",
+                            message.content
+                          );
+                          if (newContent && newContent !== message.content) {
+                            onEditMessage(index, newContent);
+                          }
+                        }
+                      : undefined
+                  }
+                >
+                  <div className="relative">
+                    <FormattedMessage
+                      content={message.content}
+                      isAI={message.role === "assistant"}
+                    />
+                    {/* Message decorative element */}
+                    <div
+                      className={`absolute -bottom-1 -right-1 w-2 h-2 rounded-full ${
+                        message.role === "user" ? "bg-pink-300" : "bg-pink-400"
+                      } opacity-60`}
+                    ></div>
+                  </div>
+                </MessageActions>
               </motion.div>
             </motion.div>
           ))}
