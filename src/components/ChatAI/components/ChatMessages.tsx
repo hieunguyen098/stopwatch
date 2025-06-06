@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
 import { Message } from "../types";
+import { FormattedMessage } from "./FormattedMessage";
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -219,7 +220,10 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
                 }`}
               >
                 <div className="relative">
-                  {message.content}
+                  <FormattedMessage
+                    content={message.content}
+                    isAI={message.role === "assistant"}
+                  />
                   {/* Message decorative element */}
                   <div
                     className={`absolute -bottom-1 -right-1 w-2 h-2 rounded-full ${
