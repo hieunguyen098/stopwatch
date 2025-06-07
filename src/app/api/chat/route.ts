@@ -224,3 +224,57 @@ export async function GET(req: Request) {
     );
   }
 }
+
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const conversationId = searchParams.get("id");
+
+    if (!conversationId) {
+      return NextResponse.json(
+        { error: "Conversation ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Get all completions to find ones belonging to this conversation
+    const completionsList = await openai.chat.completions.list({
+      limit: 100, // Increase limit to ensure we get all related completions
+    });
+
+    const completionsToDelete: string[] = [];
+
+    // Find all completions that belong to this conversation
+    for (const completion of completionsList.data) {
+      const completionWithMeta = completion as typeof completion &
+        CompletionWithMetadata;
+
+      // Check if this completion belongs to the conversation to delete
+      if (
+        completion.id === conversationId ||
+        completionWithMeta.metadata?.original_conversation_id === conversationId
+      ) {
+        completionsToDelete.push(completion.id);
+      }
+    }
+
+    // Delete all related completions
+    const deletePromises = completionsToDelete.map((completionId) =>
+      openai.chat.completions.delete(completionId)
+    );
+
+    await Promise.all(deletePromises);
+
+    return NextResponse.json({
+      success: true,
+      deletedCount: completionsToDelete.length,
+      message: "Conversation deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting conversation:", error);
+    return NextResponse.json(
+      { error: "Failed to delete conversation" },
+      { status: 500 }
+    );
+  }
+}

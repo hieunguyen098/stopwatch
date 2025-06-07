@@ -9,6 +9,7 @@ interface ChatSidebarProps {
   chatHistory: ChatHistory[];
   onNewChat: () => void;
   onLoadChat: (chat: ChatHistory) => void;
+  onDeleteChat: (chatId: string) => void;
   isLoading?: boolean;
 }
 
@@ -18,6 +19,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
   chatHistory,
   onNewChat,
   onLoadChat,
+  onDeleteChat,
   isLoading = false,
 }) => {
   return (
@@ -81,21 +83,47 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 whileHover={{ backgroundColor: "rgba(249, 168, 212, 0.1)" }}
-                className="p-4 cursor-pointer hover:bg-pink-50 transition-colors"
-                onClick={() => onLoadChat(chat)}
+                className="p-4 hover:bg-pink-50 transition-colors relative group"
               >
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className="font-medium text-pink-800 line-clamp-2">
-                    {chat.title}
-                  </h3>
-                  <span className="text-xs text-pink-400 flex-shrink-0 ml-2">
-                    {new Date(chat.timestamp).toLocaleDateString()}
-                  </span>
+                <div
+                  className="cursor-pointer"
+                  onClick={() => onLoadChat(chat)}
+                >
+                  <div className="flex justify-between items-start mb-1">
+                    <h3 className="font-medium text-pink-800 line-clamp-2 pr-8">
+                      {chat.title}
+                    </h3>
+                    <span className="text-xs text-pink-400 flex-shrink-0 ml-2">
+                      {new Date(chat.timestamp).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-sm text-pink-600 truncate">
+                    {chat.preview}
+                  </p>
+                  <div className="text-xs text-pink-400 mt-1">
+                    {chat.messages.length} messages
+                  </div>
                 </div>
-                <p className="text-sm text-pink-600 truncate">{chat.preview}</p>
-                <div className="text-xs text-pink-400 mt-1">
-                  {chat.messages.length} messages
-                </div>
+
+                {/* Delete Button */}
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (
+                      window.confirm(
+                        "Are you sure you want to delete this conversation?"
+                      )
+                    ) {
+                      onDeleteChat(chat.id);
+                    }
+                  }}
+                  className=" p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100"
+                  title="Delete conversation"
+                >
+                  🗑️
+                </motion.button>
               </motion.div>
             ))
           )}

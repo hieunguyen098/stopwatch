@@ -66,6 +66,29 @@ export default function ChatAI() {
     // and potentially re-sending from that point
   };
 
+  // Handle conversation deletion
+  const handleDeleteChat = async (chatId: string) => {
+    try {
+      const response = await fetch(`/api/chat?id=${chatId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        // Refresh chat history to remove deleted conversation
+        await refreshChatHistory();
+
+        // If the deleted chat was currently loaded, start a new chat
+        if (currentConversationId === chatId) {
+          createNewChat();
+        }
+      } else {
+        console.error("Failed to delete conversation");
+      }
+    } catch (error) {
+      console.error("Error deleting conversation:", error);
+    }
+  };
+
   // Close model selector when clicking outside
   const handleBackgroundClick = () => {
     if (isModelSelectorOpen) {
@@ -111,6 +134,7 @@ export default function ChatAI() {
         chatHistory={chatHistory}
         onNewChat={createNewChat}
         onLoadChat={handleLoadChat}
+        onDeleteChat={handleDeleteChat}
         isLoading={isLoading}
       />
 
